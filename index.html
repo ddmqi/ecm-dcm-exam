@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECM / DCM — Révisions</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Fraunces:ital,wght@0,300;0,600;1,300;1,600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ecm:#059669;--ecm2:#d1fae5;--ecm3:#064e3b;
+  --dcm:#2563eb;--dcm2:#dbeafe;--dcm3:#1e3a8a;
+  --bg:#0f0f11;--card:#18181b;--card2:#222226;
+  --border:#2e2e33;--text:#e4e4e7;--text2:#a1a1aa;--text3:#71717a;
+  --amber:#f59e0b;--amber2:#fef3c7;
+  --red:#ef4444;--red2:#fee2e2;
+  --purple:#8b5cf6;--purple2:#ede9fe;
+  --accent:#e4e4e7;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6}
+
+/* TOPBAR */
+.topbar{
+  position:sticky;top:0;z-index:200;
+  background:rgba(15,15,17,0.95);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0 2rem;
+  display:flex;align-items:center;gap:2rem;height:60px;
+}
+.logo{font-family:'Fraunces',serif;font-size:1.25rem;font-weight:600;color:var(--text);white-space:nowrap;letter-spacing:-0.5px}
+.logo span.ecm{color:var(--ecm)}
+.logo span.dcm{color:var(--dcm)}
+.nav{display:flex;gap:4px;flex:1;overflow-x:auto}
+.nav::-webkit-scrollbar{display:none}
+.nav-btn{
+  padding:6px 16px;border-radius:6px;border:none;cursor:pointer;
+  font-family:'Space Grotesk',sans-serif;font-size:0.8rem;font-weight:500;
+  background:transparent;color:var(--text2);transition:all 0.15s;white-space:nowrap;
+}
+.nav-btn:hover{background:var(--card2);color:var(--text)}
+.nav-btn.active{color:var(--text);background:var(--card2)}
+.nav-btn.ecm-active{background:var(--ecm3);color:#a7f3d0}
+.nav-btn.dcm-active{background:var(--dcm3);color:#bfdbfe}
+
+/* HERO */
+.hero{
+  padding:3rem 2rem 2rem;
+  display:flex;gap:1rem;flex-wrap:wrap;
+}
+.hero-card{
+  flex:1;min-width:200px;
+  border-radius:12px;padding:1.5rem;
+  border:1px solid var(--border);
+  cursor:pointer;transition:all 0.2s;
+}
+.hero-card:hover{transform:translateY(-2px)}
+.hero-card.ecm-card{background:linear-gradient(135deg,#064e3b,#065f46);border-color:#059669}
+.hero-card.dcm-card{background:linear-gradient(135deg,#1e3a8a,#1e40af);border-color:#2563eb}
+.hero-card.flash-card{background:linear-gradient(135deg,#451a03,#78350f);border-color:#f59e0b}
+.hero-label{font-size:0.7rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;opacity:0.7;margin-bottom:0.5rem}
+.hero-title{font-family:'Fraunces',serif;font-size:1.8rem;font-weight:600;margin-bottom:0.25rem}
+.hero-sub{font-size:0.82rem;opacity:0.7}
+
+/* MAIN LAYOUT */
+.main{padding:0 2rem 4rem;max-width:1400px}
+.section{display:none}
+.section.active{display:block}
+
+/* TABS WITHIN SECTION */
+.subtabs{display:flex;gap:4px;margin:1.5rem 0 1rem;flex-wrap:wrap}
+.stab{
+  padding:5px 14px;border-radius:6px;border:1px solid var(--border);
+  background:var(--card);color:var(--text2);font-size:0.78rem;font-weight:500;
+  cursor:pointer;transition:all 0.15s;
+}
+.stab:hover{color:var(--text);border-color:var(--text3)}
+.stab.active{color:var(--text);border-color:transparent}
+.stab.ecm-stab.active{background:var(--ecm3);color:#a7f3d0;border-color:var(--ecm)}
+.stab.dcm-stab.active{background:var(--dcm3);color:#bfdbfe;border-color:var(--dcm)}
+
+/* PANELS */
+.panel{display:none}.panel.active{display:block}
+
+/* CARDS GRID */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem;margin-top:1rem}
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:1.25rem;transition:border-color 0.15s;
+}
+.card:hover{border-color:var(--text3)}
+.card-tag{
+  display:inline-block;font-size:0.65rem;font-weight:600;letter-spacing:1.5px;
+  text-transform:uppercase;padding:2px 8px;border-radius:4px;margin-bottom:0.75rem;
+}
+.tag-ecm{background:var(--ecm3);color:#a7f3d0}
+.tag-dcm{background:var(--dcm3);color:#bfdbfe}
+.tag-formula{background:#3b0764;color:#e9d5ff}
+.tag-risk{background:#450a0a;color:#fecaca}
+.tag-amf{background:#431407;color:#fed7aa}
+.card-title{font-weight:600;font-size:0.95rem;margin-bottom:0.5rem;color:var(--text)}
+.card-body{font-size:0.85rem;color:var(--text2);line-height:1.7}
+.card-body strong{color:var(--text);font-weight:500}
+.card-body .hl-ecm{color:#34d399}
+.card-body .hl-dcm{color:#60a5fa}
+.card-body .hl-amber{color:var(--amber)}
+.card-body .hl-red{color:#f87171}
+.card-body .hl-purple{color:#a78bfa}
+
+/* FORMULA BOX */
+.formula{
+  background:var(--card2);border:1px solid #3b3b44;
+  border-radius:8px;padding:1rem;margin:0.5rem 0;
+  font-family:'Space Grotesk',monospace;font-size:0.9rem;
+  color:#c4b5fd;
+}
+.formula .f-label{font-size:0.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+
+/* FLASHCARDS */
+.flash-container{max-width:700px;margin:2rem auto}
+.flash-progress{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;font-size:0.82rem;color:var(--text2)}
+.flash-bar-wrap{height:4px;background:var(--border);border-radius:2px;flex:1;margin:0 1rem}
+.flash-bar{height:4px;background:var(--amber);border-radius:2px;transition:width 0.3s}
+.flash-card-wrap{perspective:1000px;height:280px;cursor:pointer;margin-bottom:1.5rem}
+.flash-inner{
+  width:100%;height:100%;position:relative;
+  transform-style:preserve-3d;transition:transform 0.45s cubic-bezier(.4,0,.2,1);
+}
+.flash-card-wrap.flipped .flash-inner{transform:rotateY(180deg)}
+.flash-front,.flash-back{
+  position:absolute;width:100%;height:100%;
+  backface-visibility:hidden;border-radius:12px;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  padding:2rem;text-align:center;border:1px solid var(--border);
+}
+.flash-front{background:var(--card)}
+.flash-back{background:var(--card2);transform:rotateY(180deg)}
+.flash-cat{font-size:0.65rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;opacity:0.5;margin-bottom:0.75rem}
+.flash-q{font-size:1.1rem;font-weight:500;line-height:1.5;color:var(--text)}
+.flash-a{font-size:0.88rem;line-height:1.65;color:var(--text2)}
+.flash-a strong{color:var(--text)}
+.flash-hint{font-size:0.72rem;color:var(--text3);margin-top:1rem}
+.flash-controls{display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap}
+.flash-btn{
+  padding:8px 20px;border-radius:8px;border:1px solid var(--border);
+  background:var(--card);color:var(--text2);font-family:'Space Grotesk',sans-serif;
+  font-size:0.82rem;font-weight:500;cursor:pointer;transition:all 0.15s;
+}
+.flash-btn:hover{background:var(--card2);color:var(--text)}
+.flash-btn.good{border-color:var(--ecm);color:#34d399}
+.flash-btn.good:hover{background:var(--ecm3)}
+.flash-btn.bad{border-color:#ef4444;color:#f87171}
+.flash-btn.bad:hover{background:#450a0a}
+.flash-filter{display:flex;gap:6px;margin-bottom:1.5rem;flex-wrap:wrap;justify-content:center}
+.ff-btn{
+  padding:4px 12px;border-radius:20px;border:1px solid var(--border);
+  background:transparent;color:var(--text2);font-size:0.75rem;font-weight:500;
+  cursor:pointer;transition:all 0.15s;
+}
+.ff-btn:hover{border-color:var(--text3);color:var(--text)}
+.ff-btn.active{background:var(--card2);color:var(--text);border-color:var(--text3)}
+
+/* SECTION HEADERS */
+.sec-header{
+  margin:2rem 0 1rem;
+  padding-bottom:0.75rem;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:baseline;gap:1rem;
+}
+.sec-header h2{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:600}
+.sec-header .badge{
+  font-size:0.7rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;
+  padding:2px 10px;border-radius:20px;
+}
+.badge-ecm{background:var(--ecm3);color:#a7f3d0}
+.badge-dcm{background:var(--dcm3);color:#bfdbfe}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;margin:1rem 0}
+table{width:100%;border-collapse:collapse;font-size:0.83rem}
+th{background:var(--card2);padding:8px 12px;text-align:left;font-weight:600;color:var(--text);border-bottom:2px solid var(--border)}
+td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top}
+tr:hover td{background:rgba(255,255,255,0.02)}
+
+/* TIMELINE */
+.timeline{margin:1rem 0}
+.tl-item{
+  display:flex;gap:1rem;padding:1rem;
+  border-left:2px solid var(--border);margin-left:1rem;position:relative;
+}
+.tl-item:before{
+  content:'';width:10px;height:10px;border-radius:50%;
+  position:absolute;left:-6px;top:1.2rem;background:var(--border);
+}
+.tl-item.ecm:before{background:var(--ecm)}
+.tl-item.dcm:before{background:var(--dcm)}
+.tl-dur{font-size:0.75rem;color:var(--amber);font-weight:600;white-space:nowrap;min-width:80px}
+.tl-text{font-size:0.85rem;color:var(--text2)}
+.tl-text strong{color:var(--text)}
+
+/* COMPARISON GRID */
+.comp-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+@media(max-width:600px){.comp-grid{grid-template-columns:1fr}}
+.comp-col{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.25rem}
+.comp-col.ecm-col{border-top:3px solid var(--ecm)}
+.comp-col.dcm-col{border-top:3px solid var(--dcm)}
+.comp-col h3{font-size:0.9rem;font-weight:600;margin-bottom:0.75rem}
+.comp-col ul{list-style:none;font-size:0.83rem;color:var(--text2)}
+.comp-col ul li{padding:4px 0;border-bottom:1px solid var(--border);display:flex;gap:0.5rem}
+.comp-col ul li:before{content:'›';color:var(--text3)}
+
+/* SCROLL TO TOP */
+.fab{
+  position:fixed;bottom:2rem;right:2rem;
+  width:44px;height:44px;border-radius:50%;
+  background:var(--card2);border:1px solid var(--border);
+  color:var(--text2);font-size:1.2rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.15s;z-index:100;
+}
+.fab:hover{background:var(--card);color:var(--text)}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .main{padding:0 1rem 4rem}
+  .hero{padding:1.5rem 1rem}
+  .topbar{padding:0 1rem}
+  .cards-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo"><span class="ecm">ECM</span> <span style="color:var(--text3)">×</span> <span class="dcm">DCM</span></div>
+  <nav class="nav">
+    <button class="nav-btn active" onclick="showSection('home')">Accueil</button>
+    <button class="nav-btn" onclick="showSection('ecm'); showSubtab('ecm','ecm-ipo')">ECM — Cours</button>
+    <button class="nav-btn" onclick="showSection('dcm'); showSubtab('dcm','dcm-base')">DCM — Cours</button>
+    <button class="nav-btn" onclick="showSection('flash')">Flashcards</button>
+    <button class="nav-btn" onclick="showSection('formulas')">Formules clés</button>
+  </nav>
+</div>
+
+<!-- HOME -->
+<div id="home" class="section active">
+  <div class="hero">
+    <div class="hero-card ecm-card" onclick="showSection('ecm');showSubtab('ecm','ecm-ipo')">
+      <div class="hero-label">Section 1</div>
+      <div class="hero-title">ECM</div>
+      <div class="hero-sub">IPO · AK · DPS · OCEANE · Block trades · AMF</div>
+    </div>
+    <div class="hero-card dcm-card" onclick="showSection('dcm');showSubtab('dcm','dcm-base')">
+      <div class="hero-label">Section 2</div>
+      <div class="hero-title">DCM</div>
+      <div class="hero-sub">Obligations · Pricing · Swap curves · Ratings</div>
+    </div>
+    <div class="hero-card flash-card" onclick="showSection('flash')">
+      <div class="hero-label">Révisions</div>
+      <div class="hero-title">Flashcards</div>
+      <div class="hero-sub">Q&A interactif · ECM + DCM · Formules</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="sec-header"><h2>Concepts clés — Vue d'ensemble</h2></div>
+    <div class="cards-grid">
+
+      <div class="card">
+        <span class="card-tag tag-ecm">ECM</span>
+        <div class="card-title">IPO — Pourquoi s'introduire en bourse ?</div>
+        <div class="card-body">
+          <strong>Atouts :</strong> Financement de la croissance · Liquidité pour les actionnaires · Notoriété · Fidélisation des managers (stock-options).<br><br>
+          <strong>Contraintes :</strong> Gouvernance IFRS · Coûts · Sanction de marché possible · Mise en conformité juridique.<br><br>
+          <span class="hl-ecm">Durée processus : 4–6 mois</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-ecm">ECM</span>
+        <div class="card-title">3 Types d'augmentation de capital</div>
+        <div class="card-body">
+          <strong class="hl-ecm">Avec DPS :</strong> Tournée vers actionnaires, décote 20–50%, garantie 75%.<br>
+          <strong class="hl-amber">Sans DPS :</strong> Nouveaux investisseurs, VWAP 3j −10%, placement rapide.<br>
+          <strong class="hl-red">Réservée :</strong> Personne(s) dénommée(s), prix libre fixé en AGE.
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-ecm">ECM</span>
+        <div class="card-title">OCEANE — Structure convertible</div>
+        <div class="card-body">
+          Obligation + option d'achat sur l'action. Deux composantes indépendantes :<br>
+          <strong class="hl-ecm">Bond floor</strong> = valeur actualisée des flux (taux swap + spread crédit).<br>
+          <strong class="hl-purple">Valeur option</strong> = Prix OC – Bond floor.<br>
+          <strong class="hl-amber">Delta</strong> = sensibilité à l'action. <strong>In the money → action. Out of money → obligation.</strong>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-dcm">DCM</span>
+        <div class="card-title">Qu'est-ce qu'une obligation ?</div>
+        <div class="card-body">
+          Titre de dette émis par un émetteur (corp / FIG / SSA). <strong>Paiement d'un coupon</strong> périodique + remboursement du <strong>nominal à maturité</strong>.<br><br>
+          Émission via : <span class="hl-dcm">adjudication (govies)</span> · <span class="hl-amber">offre publique (benchmark)</span> · <span class="hl-ecm">placement privé (EMTN)</span>.
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-formula">Formule</span>
+        <div class="card-title">DPS — Droit Préférentiel de Souscription</div>
+        <div class="card-body">
+          <div class="formula">
+            <div class="f-label">Prix d'équilibre (TERP)</div>
+            PE = (C × n + P × n') / (n + n')
+          </div>
+          <div class="formula">
+            <div class="f-label">Valeur du DPS</div>
+            DPS = (C − P) / (1 + n/n') = C − PE
+          </div>
+          C = cours avant · P = prix émission · n = actions anciennes · n' = nouvelles
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-amf">AMF</span>
+        <div class="card-title">Rôle de l'AMF</div>
+        <div class="card-body">
+          <strong>Visa :</strong> Tout prospectus avant émission publique.<br>
+          <strong>Surveillance :</strong> Déclarations de franchissement de seuils (5%, 10%…30%).<br>
+          <strong>Info privilégiée :</strong> Information non publique, précise, de nature à influer sur le cours → sanction pénale + pécuniaire si utilisée.<br>
+          <strong>Suspension de cotation</strong> possible sur décision AMF ou Euronext.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ECM -->
+<div id="ecm" class="section">
+<div class="main">
+  <div class="sec-header"><h2>Equity Capital Markets</h2><span class="badge badge-ecm">ECM</span></div>
+  <div class="subtabs">
+    <button class="stab ecm-stab active" id="stab-ecm-ecm-ipo" onclick="showSubtab('ecm','ecm-ipo')">IPO</button>
+    <button class="stab ecm-stab" id="stab-ecm-ecm-ak" onclick="showSubtab('ecm','ecm-ak')">Augm. de capital</button>
+    <button class="stab ecm-stab" id="stab-ecm-ecm-oc" onclick="showSubtab('ecm','ecm-oc')">OC / OCEANE</button>
+    <button class="stab ecm-stab" id="stab-ecm-ecm-block" onclick="showSubtab('ecm','ecm-block')">Block trades</button>
+    <button class="stab ecm-stab" id="stab-ecm-ecm-amf" onclick="showSubtab('ecm','ecm-amf')">AMF & Réglementation</button>
+    <button class="stab ecm-stab" id="stab-ecm-ecm-ops" onclick="showSubtab('ecm','ecm-ops')">Offres publiques</button>
+  </div>
+
+  <!-- IPO -->
+  <div class="panel active" id="panel-ecm-ecm-ipo">
+    <div class="cards-grid">
+      <div class="card">
+        <span class="card-tag tag-ecm">Définition</span>
+        <div class="card-title">À quoi sert une IPO ?</div>
+        <div class="card-body">
+          <strong>Financement :</strong> Lever des fonds propres pour financer la croissance (organique ou externe).<br>
+          <strong>Liquidité :</strong> Permettre aux actionnaires existants (fonds, fondateurs) de céder tout ou partie.<br>
+          <strong>Notoriété :</strong> Crédibilité vis-à-vis des clients, fournisseurs, partenaires.<br>
+          <strong>RH :</strong> Attirer et fidéliser les managers via stock-options et actionnariat.<br><br>
+          <span class="hl-red">Contrainte principale :</span> Mise en conformité gouvernance, IFRS, coût de cotation, sanction de marché.
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-ecm">Document</span>
+        <div class="card-title">Le Prospectus — Contient tout</div>
+        <div class="card-body">
+          Document visé par l'<strong class="hl-amber">AMF</strong>, composé de :<br>
+          • <strong>Document d'enregistrement universel (URD)</strong> : activité, stratégie, gouvernance, comptes IFRS 3 derniers exercices, facteurs de risque.<br>
+          • <strong>Note d'opération</strong> : structure de l'offre, calendrier, fourchette de prix.<br>
+          • Attestations CAC · Avis Euronext · Prospectus international.<br><br>
+          <span class="hl-ecm">Processus AMF : 3–6 mois pour une IPO.</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-ecm">Mécanique</span>
+        <div class="card-title">Livre d'ordres (Bookbuilding)</div>
+        <div class="card-body">
+          Les <strong>Bookrunners</strong> collectent les ordres des investisseurs institutionnels pendant le roadshow (1–2 semaines).<br><br>
+          <strong>Couverture :</strong> Le livre doit être couvert (oversubscribed) pour créer un <span class="hl-ecm">momentum</span>.<br>
+          <strong>Prix fixé</strong> en fonction de la demande et de sa sensibilité au prix → <em>pricing final</em>.<br>
+          <strong>Allocation</strong> : qualité ordre, précocité, montant, type investisseur (long only > hedge fund).<br><br>
+          <span class="hl-amber">Dynamique J1–J3 conditionne le succès total de l'opération.</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-ecm">Structure</span>
+        <div class="card-title">IPO Primaire vs Secondaire</div>
+        <div class="card-body">
+          <strong class="hl-ecm">Primaire (AK) :</strong> Émission d'actions nouvelles → argent va dans la société. Signal positif : financement d'un projet précis.<br><br>
+          <strong class="hl-amber">Secondaire (cession) :</strong> Vente d'actions existantes par actionnaires sortants → argent sort de la société. Signal négatif possible.<br><br>
+          <strong>Meilleur mix :</strong> AK primaire + cession partielle (actionnaires restent au capital = alignement d'intérêt).
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-ecm">Organisation</span>
+        <div class="card-title">Syndicat IPO — Hiérarchie</div>
+        <div class="card-body">
+          <strong>Global Coordinator</strong> : coordonne tout, préciput sur commissions, tient le livre.<br>
+          <strong>Joint Bookrunners</strong> : Tiennent le livre, roadshows, allocation.<br>
+          <strong>Co-Lead Managers</strong> : Diriger investisseurs, recherche analytique.<br>
+          <strong>Co-Managers</strong> : Participation limitée (recherche uniquement).<br><br>
+          <span class="hl-amber">Commissions : 1%–3% du montant (IPO). Décomposé en montage + garantie + placement.</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-ecm">Concept</span>
+        <div class="card-title">Flottant</div>
+        <div class="card-body">
+          Part du capital <strong>librement négociable sur le marché</strong> (hors blocs stables des actionnaires de référence).<br><br>
+          Euronext exige un <strong>flottant minimum</strong> (dérogation possible au cas par cas).<br><br>
+          <span class="hl-red">Risque "overhang"</span> : actionnaires historiques avec lock-up court → risque de pression vendeuse après expiration.<br><br>
+          <strong class="hl-ecm">Flottant FDJ (2019) :</strong> ~47% · Capimkt : 3,8 Mds€.
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-ecm">Technique</span>
+        <div class="card-title">Greenshoe — Mécanisme</div>
+        <div class="card-body">
+          Option de <strong>sur-allocation</strong> permettant d'augmenter la taille de l'offre de <span class="hl-ecm">15%</span> au-delà de la clause d'extension.<br><br>
+          <strong>Double rôle :</strong><br>
+          1. Augmenter la taille si demande forte.<br>
+          2. <strong>Stabiliser le cours</strong> post-cotation : la banque rachète en marché si cours < prix IPO, puis exerce le greenshoe si cours > prix.<br><br>
+          <span class="hl-amber">Exemple FDJ : Greenshoe exercé → flottant porté à 47%.</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-ecm">Technique</span>
+        <div class="card-title">Lock-up</div>
+        <div class="card-body">
+          Période d'<strong>interdiction de cession</strong> imposée aux actionnaires post-IPO.<br><br>
+          <strong>Durée standard :</strong> 180 jours pour les managers · 12–18 mois pour les fonds PE.<br><br>
+          Demandé par le marché pour rassurer les investisseurs : évite la pression vendeuse immédiate.<br><br>
+          <span class="hl-red">Expiration du lock-up</span> = risque d'overhang → surveiller les dates.
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-formula">Calcul</span>
+        <div class="card-title">Capitalisation boursière</div>
+        <div class="card-body">
+          <div class="formula">
+            <div class="f-label">Définition</div>
+            Capi = Nombre total d'actions × Cours de bourse
+          </div>
+          <div class="formula">
+            <div class="f-label">Après IPO (post-money)</div>
+            Capi post = Capi pre-money + Montant AK
+          </div>
+          <strong>Exemple cours :</strong> Valorisation pre-money 80M€ + AK 25M€ = Capi post 105M€ (si décote 20%).<br>
+          <span class="hl-amber">Flottant = AK + actions cédées / Capi post.</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-ecm">Process</span>
+        <div class="card-title">Calendrier IPO — Étapes</div>
+        <div class="card-body">
+          <div class="timeline">
+            <div class="tl-item ecm"><div class="tl-dur">M1–M3</div><div class="tl-text"><strong>Chantiers préliminaires</strong> : gouvernance, juridique, IFRS, equity story.</div></div>
+            <div class="tl-item ecm"><div class="tl-dur">M3–M4</div><div class="tl-text"><strong>Documentation</strong> : rédaction URD, note d'opération, revue AMF.</div></div>
+            <div class="tl-item ecm"><div class="tl-dur">−4 sem</div><div class="tl-text"><strong>Structuration</strong> : syndicat, rapport d'analystes, early look meetings.</div></div>
+            <div class="tl-item ecm"><div class="tl-dur">−2 sem</div><div class="tl-text"><strong>Investor education</strong> : analystes + pré-marketing, feedbacks valorisation.</div></div>
+            <div class="tl-item ecm"><div class="tl-dur">Semaine J</div><div class="tl-text"><strong>Roadshow + Bookbuilding</strong> : fourchette, management meetings, book.</div></div>
+            <div class="tl-item ecm"><div class="tl-dur">J+1</div><div class="tl-text"><strong>Pricing + Allocation + Cotation.</strong> Stabilisation (greenshoe).</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- AUGMENTATION DE CAPITAL -->
+  <div class="panel" id="panel-ecm-ecm-ak">
+    <div class="cards-grid">
+
+      <div class="card">
+        <span class="card-tag tag-ecm">Mécanisme</span>
+        <div class="card-title">AK avec DPS — Fonctionnement</div>
+        <div class="card-body">
+          Chaque actionnaire reçoit <strong>1 DPS par action détenue</strong>. Il peut :<br>
+          • <span class="hl-ecm">Exercer</span> ses DPS pour souscrire des actions nouvelles.<br>
+          • <span class="hl-amber">Vendre</span> ses DPS sur le marché (DPS négociable!).<br>
+          • <span class="hl-purple">Opération blanche</span> : vendre assez de DPS pour financer la souscription.<br><br>
+          <strong>Décote ex-droit :</strong> 20–30% financement · 30–40% recapitalisation.<br>
+          <strong>Garantie bancaire :</strong> 75% minimum (hard underwriting).
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-formula">Formule</span>
+        <div class="card-title">TERP — Cours Ex-Droit</div>
+        <div class="card-body">
+          <div class="formula">
+            <div class="f-label">Théoretical Ex-Rights Price</div>
+            TERP = (C × n + P × n') / (n + n')
+          </div>
+          <div class="formula">
+            <div class="f-label">Valeur DPS</div>
+            DPS = (C − P) / (1 + n/n')
+          </div>
+          <div class="formula">
+            <div class="f-label">Vérification</div>
+            DPS = C − TERP
+          </div>
+          <strong>Exemple GL events :</strong> TERP = 21,96€ · Prix émission = 17,80€ · Décote ex-droit = 18,94%
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-ecm">Exemple</span>
+        <div class="card-title">Exemple numérique DPS</div>
+        <div class="card-body">
+          <strong>Données :</strong> 10 actions · C = 100€ · Parité 1 nouvelle / 5 anciennes · P = 70€<br><br>
+          <strong>TERP</strong> = (100×10 + 70×2) / 12 = <span class="hl-ecm">1140/12 = 95€</span><br>
+          <strong>DPS</strong> = 100 − 95 = <span class="hl-amber">5€</span><br><br>
+          Un investisseur externe : paye 70€ + 5 DPS × 5€ = 70+25 = <span class="hl-purple">95€</span> par action.<br>
+          Actionnaire vendant : 10 DPS × 5€ + 10 actions × 95€ = 50 + 950 = <span class="hl-ecm">1000€</span> = patrimoine initial.
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-ecm">Concept</span>
+        <div class="card-title">AK sans DPS — Caractéristiques</div>
+        <div class="card-body">
+          Pas de mécanisme protecteur pour les actionnaires → <strong class="hl-red">dilution directe</strong>.<br><br>
+          <strong>Prix :</strong> VWAP 3 jours pondéré −10% maximum.<br>
+          <strong>Délai de priorité</strong> possible (non négociable, pro-rata participation).<br>
+          <strong>Timing :</strong> Placement en 1–2 jours (book-building rapide).<br>
+          <strong>Garantie soft</strong> : banques garantissent APRÈS le placement.<br><br>
+          <span class="hl-ecm">Adapté : marché porteur, société bien orientée, nouveaux investisseurs.</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-ecm">Concept</span>
+        <div class="card-title">AK Réservée — Cadre juridique</div>
+        <div class="card-body">
+          Réservée à <strong>une ou plusieurs personnes nommément désignées</strong>.<br><br>
+          <strong>Autorisation :</strong> Résolution ad hoc en <span class="hl-amber">AGE</span> (majorité 2/3). Les bénéficiaires ne peuvent pas voter.<br>
+          <strong>Prix :</strong> Librement fixé par l'AGE.<br>
+          <strong>Rapport CAC</strong> requis sur la suppression du DPS et le prix.<br>
+          <strong>Note AMF</strong> si l'opération > 20% du capital.<br><br>
+          <span class="hl-purple">Usage : entrée d'un industriel, société en difficulté, salariés.</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-formula">Calcul</span>
+        <div class="card-title">Autorisations AGE — Délais</div>
+        <div class="card-body">
+          La société doit disposer d'<strong>autorisations votées en AGE depuis moins de 26 mois</strong>.<br><br>
+          <div class="formula">
+            <div class="f-label">Délais réglementaires</div>
+            IPO : 3–6 mois<br>
+            AK : 1–2 mois<br>
+            OCEANE : 1–3 semaines<br>
+            Offre publique : 3–4 mois
+          </div>
+          <span class="hl-amber">Sans DPS &lt;20% capital : pas de prospectus AMF. &lt;10% : pas de règle VWAP.</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- OCEANE / OC -->
+  <div class="panel" id="panel-ecm-ecm-oc">
+    <div class="cards-grid">
+
+      <div class="card">
+        <span class="card-tag tag-ecm">Structure</span>
+        <div class="card-title">Obligation Convertible — Composantes</div>
+        <div class="card-body">
+          <strong class="hl-dcm">Composante obligataire</strong> = Bond floor = valeur actualisée des coupons + remboursement au taux swap + spread crédit.<br><br>
+          <strong class="hl-purple">Composante optionnelle</strong> = Prix OC − Bond floor.<br><br>
+          <strong>Delta :</strong> Sensibilité de l'OC à l'action (0%–100%).<br>
+          <strong class="hl-ecm">Produit asymétrique :</strong> Profite de la hausse de l'action, protégé par le bond floor en cas de baisse.
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-ecm">Comportement</span>
+        <div class="card-title">OC In the Money vs Out of the Money</div>
+        <div class="card-body">
+          <strong class="hl-ecm">In the money (cours >> prix conversion)</strong><br>
+          → L'OC se comporte comme une <strong>action</strong>. Delta élevé (>80%). Prime de conversion faible (&lt;10%).<br><br>
+          <strong class="hl-red">Out of the money (cours << prix conversion)</strong><br>
+          → L'OC se comporte comme une <strong>obligation</strong>. Delta faible (&lt;25%). Prime de conversion >50%.<br><br>
+          <span class="hl-amber">OC = "bondlight" : floor obligataire + optionnalité action.</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-ecm">Concept</span>
+        <div class="card-title">Bond Floor — Plancher actuariel</div>
+        <div class="card-body">
+          <div class="formula">
+            <div class="f-label">Bond Floor</div>
+            BF = Σ [Coupon_i / (1+r)^i] + [Nominal / (1+r)^n]
+          </div>
+          où r = taux swap + spread de crédit de l'émetteur.<br><br>
+          <span class="hl-red">Hausse du spread de crédit → baisse du bond floor → baisse de la valeur de l'OC.</span><br>
+          <span class="hl-amber">Coupon faible → plus grande part optionnelle (bond floor bas → option prend plus de place).</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-ecm">Paramètres</span>
+        <div class="card-title">Facteurs de valeur d'une OCEANE</div>
+        <div class="card-body">
+          <strong class="hl-ecm">↑ valeur option :</strong> Volatilité ↑ · Maturité ↑ · Taux sans risque ↑ · Prime conversion faible.<br>
+          <strong class="hl-red">↓ valeur option :</strong> Spread crédit ↑ · Dividende ↑ · Soft-call · Prime conversion élevée.<br><br>
+          <strong>Soft-call :</strong> Émetteur peut forcer la conversion si cours > 130% du prix de remboursement → réduit légèrement la valeur option.<br>
+          <strong>Put investisseur :</strong> Possibilité de remboursement anticipé → augmente valeur OC.
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-ecm">Exemple</span>
+        <div class="card-title">Exemple OCEANE — Données de marché</div>
+        <div class="card-body">
+          Cours = 100€ · <strong>Prime conversion = 35%</strong> → Prix conversion = 135€.<br>
+          Coupon = 0,25% · Taux swap 5A = 0,27% · Spread crédit = 1,50%.<br>
+          Taux obligation sèche = <span class="hl-dcm">~1,77%</span>.<br>
+          <strong class="hl-ecm">Bond floor = 92,7%</strong> · <strong class="hl-purple">Valeur option = 7,3%</strong>.<br>
+          Delta = 37% · Volatilité implicite = 24%.<br><br>
+          <span class="hl-amber">TRI = Coupon − Valeur actuarielle de l'option.</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-ecm">Comparaison</span>
+        <div class="card-title">OCEANE vs ORNANE</div>
+        <div class="card-body">
+          <strong class="hl-ecm">OCEANE :</strong> Conversion en actions nouvelles. 1 OCEANE = 1 action. Dilution plus forte.<br>
+          → Split accounting IFRS : composante dette + fonds propres (pas de mark-to-market).<br><br>
+          <strong class="hl-purple">ORNANE :</strong> En cas de conversion : remboursement au nominal en <strong>cash</strong> + actions pour la <strong>surperformance seulement</strong>.<br>
+          → Dilution ÷ 4 environ. MAIS mark-to-market IFRS de la totalité ou partie optionnelle.<br><br>
+          <span class="hl-amber">Exemple : ORNANE 100€, cours = 130€ → cash 100€ + (30/130) = 0,23 action.</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-ecm">Produit</span>
+        <div class="card-title">OEA — Obligation Échangeable en Actions</div>
+        <div class="card-body">
+          Similaire à l'OC mais <strong>échange contre des actions existantes</strong> détenues par l'émetteur (participation cotée).<br><br>
+          <strong class="hl-amber">Usage :</strong><br>
+          • Céder une participation non stratégique (ex: Kering/Puma · Atos/Worldline).<br>
+          • Financer un holding sur sa filiale cotée.<br>
+          • Augmenter le flottant lors d'une IPO de filiale.<br><br>
+          <span class="hl-red">Contrainte :</span> Cession incertaine (dépend du cours) · Gel des titres sous-jacents.
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-ecm">Risque crédit</span>
+        <div class="card-title">Impact spread crédit sur OC</div>
+        <div class="card-body">
+          <div class="formula">
+            <div class="f-label">Mécanisme</div>
+            ↑ Spread crédit → ↑ taux actualisation → ↓ Bond floor → ↓ Valeur OC
+          </div>
+          <strong class="hl-red">Double effet négatif :</strong> La hausse du spread dégrade simultanément la composante obligataire ET signale une détérioration crédit de l'émetteur.<br><br>
+          <span class="hl-amber">Delta baisse aussi car l'action de l'émetteur tend à baisser en contexte de stress crédit.</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BLOCK TRADES -->
+  <div class="panel" id="panel-ecm-ecm-block">
+    <div class="cards-grid">
+
+      <div class="card">
+        <span class="card-tag tag-ecm">Concept</span>
+        <div class="card-title">Block Trade — Définition & Usage</div>
+        <div class="card-body">
+          Cession d'un <strong>bloc d'actions</strong> par un actionnaire qui souhaite se désengager d'une participation minoritaire.<br><br>
+          <strong>Taille :</strong> En règle générale définie en <strong>multiple du volume quotidien moyen</strong> (ADV).<br><br>
+          <span class="hl-ecm">Facteurs de succès :</span> Equity story solide · Marché porteur · Calendrier d'annonces corporate · Réussite d'opérations ECM précédentes.
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-ecm">Technique</span>
+        <div class="card-title">ABB — Accelerated Bookbuilding</div>
+        <div class="card-body">
+          <strong>= Block trade accéléré.</strong> Processus en quelques heures.<br><br>
+          <strong>Mécanisme :</strong><br>
+          1. Banque lance un book auprès d'institutionnels.<br>
+          2. Prix fixé à l'issue du book en fonction demande et sensibilité prix.<br>
+          3. Possible <em>backstop</em> (décote minimum garantie par la banque).<br><br>
+          <span class="hl-red">Limite :</span> Non adapté à des blocs de grande taille relative au flottant.<br>
+          <span class="hl-ecm">Avantage :</span> Rapidité · Concurrence entre investisseurs.
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-ecm">Technique</span>
+        <div class="card-title">Bought Deal vs ABB</div>
+        <div class="card-body">
+          <strong class="hl-amber">Bought Deal :</strong> La banque achète le bloc au cédant à un prix garanti → risque maximum pour la banque → replace ensuite auprès d'investisseurs.<br>
+          <strong>Avantage cédant :</strong> Certitude de réalisation + prix garanti.<br>
+          <strong class="hl-red">Inconvénient :</strong> Décote plus importante qu'un ABB · Impact défavorable potentiel sur le cours.<br><br>
+          <div class="tbl-wrap"><table>
+            <tr><th></th><th>ABB</th><th>Bought Deal</th></tr>
+            <tr><td>Risque banque</td><td>Faible (soft)</td><td>Fort (hard)</td></tr>
+            <tr><td>Décote</td><td>Moindre</td><td>Plus élevée</td></tr>
+            <tr><td>Certitude cédant</td><td>Non</td><td>Oui</td></tr>
+          </table></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-amf">Réglementation</span>
+        <div class="card-title">Contraintes de rachat — Volume quotidien</div>
+        <div class="card-body">
+          Le volume racheté <strong>ne peut excéder 25% du volume quotidien</strong> moyen (règle programme rachat).<br><br>
+          <strong>Période d'interdiction :</strong> 15 jours calendaires avant publication de résultats (annuels, trimestriels).<br>
+          <strong>Pas d'interdiction</strong> si opérations confiées à un prestataire indépendant (contrat de liquidité).<br><br>
+          <strong>Prix :</strong> Pas supérieur au dernier cours coté ou meilleure limite à l'achat.<br>
+          <strong>Obligation de déclaration</strong> : dans les 7 jours.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- AMF -->
+  <div class="panel" id="panel-ecm-ecm-amf">
+    <div class="cards-grid">
+
+      <div class="card">
+        <span class="card-tag tag-amf">Régulation</span>
+        <div class="card-title">Rôle de l'AMF</div>
+        <div class="card-body">
+          <strong>Autorité des Marchés Financiers</strong> — Régulateur des marchés financiers français.<br><br>
+          <strong>Missions :</strong><br>
+          • Viser les <strong>prospectus</strong> avant toute offre publique.<br>
+          • Contrôler les <strong>déclarations de franchissement de seuils</strong>.<br>
+          • Surveiller les <strong>informations privilégiées</strong> et abus de marché.<br>
+          • Valider la conformité des <strong>offres publiques</strong> (OPA, OPE).<br>
+          • Autoriser les <strong>suspensions de cotation</strong>.
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-amf">Réglementation</span>
+        <div class="card-title">Information privilégiée — Définition</div>
+        <div class="card-body">
+          Information :<br>
+          • <strong>Non publique</strong> (pas encore diffusée au marché).<br>
+          • <strong>Précise</strong> (concerne un fait précis probable).<br>
+          • <strong>De nature à influer de façon sensible</strong> sur le cours.<br><br>
+          <span class="hl-red">Délit d'initié</span> = utiliser une info privilégiée pour trader → sanction pénale (prison) + pécuniaire (AMF).<br><br>
+          <strong class="hl-amber">Violation AMF :</strong> Amendes, interdictions d'exercice, poursuites pénales.
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-amf">Réglementation</span>
+        <div class="card-title">Suspension de cotation</div>
+        <div class="card-body">
+          Décidée par l'<strong>AMF ou Euronext</strong> dans certaines situations :<br>
+          • Rumeur ou fuite d'information sensible non confirmée.<br>
+          • Événement exceptionnel (OPA, profit warning majeur).<br>
+          • Suspicion d'abus de marché.<br>
+          • Demande de l'émetteur pour publication d'une information importante.<br><br>
+          <span class="hl-amber">Principe : égalité d'information entre tous les investisseurs.</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-amf">Réglementation</span>
+        <div class="card-title">Franchissements de seuils</div>
+        <div class="card-body">
+          Déclaration obligatoire à la <strong>hausse comme à la baisse</strong> lorsque la détention atteint :<br>
+          <span class="hl-dcm">5% · 10% · 15% · 20% · 25% · 30% · 33,33% · 50% · 66,66%</span><br><br>
+          <strong>Délai :</strong> 5 jours de bourse à compter du franchissement.<br><br>
+          <strong>OPA obligatoire :</strong> Franchissement de 30% → obligation de déposer une OPA sur 100% des titres.<br>
+          <span class="hl-red">Vitesse d'acquisition :</span> +1% en 12 mois si détention entre 30–50% → OPA obligatoire.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- OFFRES PUBLIQUES -->
+  <div class="panel" id="panel-ecm-ecm-ops">
+    <div class="cards-grid">
+
+      <div class="card">
+        <span class="card-tag tag-ecm">Définition</span>
+        <div class="card-title">Types d'offres publiques</div>
+        <div class="card-body">
+          <strong class="hl-ecm">OPA</strong> : Offre Publique d'Achat (cash).<br>
+          <strong class="hl-dcm">OPE</strong> : Offre Publique d'Échange (titres).<br>
+          <strong class="hl-amber">OPAS</strong> : OPA/OPE Simplifiée (&gt;50% détenu, procédure 10 jours).<br>
+          <strong class="hl-red">OPR</strong> : Offre Publique de Retrait (&gt;90% droits de vote → minoritaires demandent retrait).<br>
+          <strong class="hl-purple">RO</strong> : Retrait Obligatoire (&gt;95% capital, actionnaires forcés de sortir).<br>
+          <strong>OPRA</strong> : Offre Publique de Rachat (société rachète ses propres titres).
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-ecm">Règle</span>
+        <div class="card-title">Seuils & déclencheurs d'OPA</div>
+        <div class="card-body">
+          <div class="formula">
+            <div class="f-label">Seuils clés</div>
+            30% → OPA obligatoire<br>
+            30–50% + 1% en 12 mois → OPA obligatoire<br>
+            >50% → OPA simplifiée possible<br>
+            >90% DdV → OPR possible<br>
+            >95% capital → Retrait obligatoire (RO)
+          </div>
+          <strong>Prix OPA oblig. :</strong> Au moins égal au prix le plus élevé payé dans les 12 mois précédant.<br>
+          <strong>Durée offre :</strong> 25 jours bourse (normale) · 10 jours (simplifiée).
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div><!-- end main ecm -->
+</div>
+
+<!-- DCM -->
+<div id="dcm" class="section">
+<div class="main">
+  <div class="sec-header"><h2>Debt Capital Markets</h2><span class="badge badge-dcm">DCM</span></div>
+  <div class="subtabs">
+    <button class="stab dcm-stab active" id="stab-dcm-dcm-base" onclick="showSubtab('dcm','dcm-base')">Bases obligations</button>
+    <button class="stab dcm-stab" id="stab-dcm-dcm-emetteurs" onclick="showSubtab('dcm','dcm-emetteurs')">Émetteurs & Ratings</button>
+    <button class="stab dcm-stab" id="stab-dcm-dcm-process" onclick="showSubtab('dcm','dcm-process')">Process émission</button>
+    <button class="stab dcm-stab" id="stab-dcm-dcm-swap" onclick="showSubtab('dcm','dcm-swap')">Swap pricing</button>
+    <button class="stab dcm-stab" id="stab-dcm-dcm-org" onclick="showSubtab('dcm','dcm-org')">Organisation DCM</button>
+  </div>
+
+  <!-- BASES -->
+  <div class="panel active" id="panel-dcm-dcm-base">
+    <div class="cards-grid">
+
+      <div class="card">
+        <span class="card-tag tag-dcm">Définition</span>
+        <div class="card-title">Qu'est-ce qu'une obligation ?</div>
+        <div class="card-body">
+          Titre de dette émis par une institution (Corporate, FIG, SSA) :<br>
+          • Paie un <strong>coupon fixe ou flottant</strong> périodique à l'investisseur.<br>
+          • Rembourse le <strong>nominal (pair) à maturité</strong>.<br>
+          • Peut être indexé sur un actif (OIL, Equity, FX, CMS, Euribor…).<br><br>
+          <strong class="hl-dcm">Modes d'émission :</strong><br>
+          • <strong>Adjudication</strong> : gouvernements (govies).<br>
+          • <strong>Offre publique benchmark</strong> : grandes émissions.<br>
+          • <strong>Placement privé EMTN</strong> : souplesse documentation.
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-dcm">Programme</span>
+        <div class="card-title">Programme EMTN</div>
+        <div class="card-body">
+          <strong>EMTN</strong> = Euro Medium Term Note Programme.<br><br>
+          <strong class="hl-dcm">Documentation cadre</strong> permettant des émissions continues de dette sans re-documenter à chaque fois.<br><br>
+          <strong>Stand-alone :</strong> Documentation spécifique pour une seule transaction.<br><br>
+          <strong>Clearing houses :</strong> Euroclear · Clearstream (Europe) · DTC (USA).<br><br>
+          <span class="hl-amber">Avantage EMTN : flexibilité sur maturité, devise, structure, montant → issuance rapide.</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-formula">Pricing</span>
+        <div class="card-title">Composantes du prix d'une obligation</div>
+        <div class="card-body">
+          <div class="formula">
+            <div class="f-label">Rendement à maturité (YTM)</div>
+            YTM = Taux sans risque + Spread de crédit
+          </div>
+          <div class="formula">
+            <div class="f-label">Prix d'une obligation (simplifié)</div>
+            P = Σ [C/(1+r)^t] + [Nominal/(1+r)^n]
+          </div>
+          <strong>r</strong> = YTM · <strong>C</strong> = coupon · <strong>n</strong> = maturité<br><br>
+          <span class="hl-red">Relation inverse prix/taux :</span> Si les taux montent → prix obligation baisse.
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-dcm">Concept</span>
+        <div class="card-title">Spread de crédit</div>
+        <div class="card-body">
+          <strong>Définition :</strong> Écart (en bp) entre le taux de l'obligation de l'émetteur et le taux sans risque (taux swap).<br><br>
+          <strong class="hl-red">Facteurs qui élargissent le spread :</strong><br>
+          • Dégradation de la notation (rating).<br>
+          • Augmentation du levier.<br>
+          • Secteur en stress · Contexte macro adverse.<br><br>
+          <strong class="hl-ecm">↑ Spread crédit → ↓ Prix obligation → ↓ Bond floor des OC.</strong>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-dcm">Statuts</span>
+        <div class="card-title">Statuts des obligations — Hiérarchie</div>
+        <div class="card-body">
+          En cas de défaut, ordre de priorité de remboursement :<br><br>
+          <span class="hl-ecm">Senior Secured</span> (garanti) &gt; <span class="hl-dcm">Senior Unsecured</span> &gt; <span class="hl-amber">Senior Non-Preferred</span> &gt; <span class="hl-red">Subordinated / Tier 2</span> &gt; <span class="hl-purple">AT1 / CoCo</span> &gt; Actions.<br><br>
+          <strong>Covered bonds :</strong> Garantis par actifs ségrégués (immobilier, créances publiques) → spread très faibles.<br>
+          <strong>AT1 :</strong> Additional Tier 1 (banques) → coupon discrétionnaire, conversion possible.
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-dcm">Concept</span>
+        <div class="card-title">Coupon fixe vs flottant</div>
+        <div class="card-body">
+          <strong class="hl-dcm">Coupon fixe :</strong> Taux défini à l'émission, payé sur toute la durée. Adapté quand les taux sont bas (lock-in).<br><br>
+          <strong class="hl-amber">Coupon flottant :</strong> Indexé sur Euribor 3M/6M + spread. Adapté si taux variables attendus en hausse.<br><br>
+          <strong class="hl-purple">Coupon structuré :</strong> Indexé sur CMS (Constant Maturity Swap), inflation, equity, etc.<br><br>
+          <span class="hl-ecm">La plupart des benchmarks corporates → taux fixe.</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- EMETTEURS RATINGS -->
+  <div class="panel" id="panel-dcm-dcm-emetteurs">
+    <div class="cards-grid">
+
+      <div class="card">
+        <span class="card-tag tag-dcm">Catégories</span>
+        <div class="card-title">Types d'émetteurs</div>
+        <div class="card-body">
+          <strong class="hl-dcm">SSA</strong> (Sovereign, Supranational, Agency) : KFW, EIB, CDC, Royaume de Belgique → spreads très faibles.<br>
+          <strong class="hl-ecm">Corporate</strong> : Airbus, VW, EDF, LVMH → IG ou HY.<br>
+          <strong class="hl-amber">FIG</strong> (Financial Institutions Group) : BNP, Santander, ICBC → émissions covered, senior, Tier 2, AT1.<br>
+          <strong class="hl-purple">EM</strong> (Emerging Markets) : Africa Finance Corp, Santander Chile → spreads plus élevés, risque politique.
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-dcm">Notation</span>
+        <div class="card-title">Ratings — Grille</div>
+        <div class="card-body">
+          <div class="tbl-wrap"><table>
+            <tr><th>Investment Grade (IG)</th><th>High Yield (HY / Junk)</th></tr>
+            <tr><td class="hl-ecm">AAA / Aaa</td><td class="hl-red">BB+ / Ba1</td></tr>
+            <tr><td>AA / Aa</td><td>BB / Ba2</td></tr>
+            <tr><td>A / A</td><td>B / B</td></tr>
+            <tr><td>BBB / Baa</td><td>CCC / Caa → défaut</td></tr>
+          </table></div>
+          <strong>Seuil critique :</strong> BBB- / Baa3 → passage en HY = <span class="hl-red">"fallen angel"</span> → élargissement brutal du spread.<br>
+          <span class="hl-amber">LVMH : A+ / A1 stable → spread très serré ~90bp.</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-dcm">Analyse</span>
+        <div class="card-title">Comparable — Credit Curve</div>
+        <div class="card-body">
+          La <strong>courbe de crédit</strong> représente les spreads de l'émetteur en fonction de la maturité.<br><br>
+          <strong>Utilisation :</strong> Déterminer le niveau de spread "fair value" pour une nouvelle émission en comparaison avec des obligations existantes similaires (même notation, même secteur, même devise).<br><br>
+          <span class="hl-dcm">Prix indicatif IPT → guidance → final terms selon la demande du livre d'ordres.</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-dcm">ESG</span>
+        <div class="card-title">Obligations durables (Green / SLB)</div>
+        <div class="card-body">
+          <strong class="hl-ecm">Green Bond :</strong> Fonds fléchés vers projets environnementaux. Reporting annuel obligatoire.<br><br>
+          <strong class="hl-amber">Sustainability-Linked Bond (SLB) :</strong> Coupon step-up si KPIs ESG non atteints.<br><br>
+          <strong>Exemple H&M :</strong> KPIs 2025 (30% matières recyclées · -20% GHG Scope 1&2 · -10% Scope 3). Si objectifs ratés → +25bp de coupon.<br><br>
+          <span class="hl-purple">Marché en forte croissance depuis 2019.</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PROCESS EMISSION -->
+  <div class="panel" id="panel-dcm-dcm-process">
+    <div class="cards-grid">
+
+      <div class="card">
+        <span class="card-tag tag-dcm">Process</span>
+        <div class="card-title">Timeline d'une émission obligataire (ex: H&M)</div>
+        <div class="card-body">
+          <div class="timeline">
+            <div class="tl-item dcm"><div class="tl-dur">J-semaines</div><div class="tl-text"><strong>Mandat + Investor Calls / Roadshow</strong> : Présentation de l'émetteur aux investisseurs clés.</div></div>
+            <div class="tl-item dcm"><div class="tl-dur">Jour J matin</div><div class="tl-text"><strong>Announcement + IPT</strong> : Initial Price Thoughts annoncés aux investisseurs (fourchette indicative).</div></div>
+            <div class="tl-item dcm"><div class="tl-dur">J + 2–4h</div><div class="tl-text"><strong>Guidance + Book indication</strong> : Guidance resserrée selon l'état du livre.</div></div>
+            <div class="tl-item dcm"><div class="tl-dur">J + 4–6h</div><div class="tl-text"><strong>Final Terms + Book closing</strong> : Prix final, montant, allocation. Ex H&M : livre 3,8 Mds€.</div></div>
+            <div class="tl-item dcm"><div class="tl-dur">J+5</div><div class="tl-text"><strong>Règlement-livraison</strong> : Fonds versés, obligations livrées via Euroclear.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-dcm">Concept</span>
+        <div class="card-title">IPT → Guidance → Final Terms</div>
+        <div class="card-body">
+          <strong class="hl-dcm">IPT</strong> (Initial Price Thoughts) : Première indication de spread/coupon — volontairement large.<br>
+          <strong class="hl-amber">Guidance</strong> : Resserrement selon la qualité du livre → signal aux investisseurs que l'opération se construit bien.<br>
+          <strong class="hl-ecm">Final Terms</strong> : Prix définitif. L'émetteur vise à maximiser le niveau du livre pour <em>new issue premium</em> minimal.<br><br>
+          <span class="hl-red">New issue premium :</span> Concession accordée aux investisseurs pour rémunérer le risque de souscription (typiquement 5–15bp).
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-dcm">Acteurs</span>
+        <div class="card-title">Rôles dans une émission DCM</div>
+        <div class="card-body">
+          <strong>Origination :</strong> Relation avec l'émetteur, origination du deal, structuration initiale.<br>
+          <strong>Syndicate :</strong> Gestion du livre d'ordres, pricing, allocation, communication investisseurs.<br>
+          <strong>Sales :</strong> Distribution auprès des investisseurs institutionnels (gérants, banques, assurances).<br>
+          <strong>Trading :</strong> Market-making post-émission, liquidité secondaire.<br>
+          <strong>Research :</strong> Publications crédit, recommandations.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SWAP PRICING -->
+  <div class="panel" id="panel-dcm-dcm-swap">
+    <div class="cards-grid">
+
+      <div class="card">
+        <span class="card-tag tag-formula">Formule</span>
+        <div class="card-title">Swap de taux — Définition</div>
+        <div class="card-body">
+          Un swap fixe/flottant échange :<br>
+          • <strong class="hl-dcm">Jambe fixe</strong> : paiement d'un taux fixe pendant N années.<br>
+          • <strong class="hl-amber">Jambe flottante</strong> : réception d'Euribor 3M ou 6M réinitialisé périodiquement.<br><br>
+          <div class="formula">
+            <div class="f-label">Exemple EUR (cours)</div>
+            Euribor 6M 10Y = 0,005% mid (taux fixe équivalent)
+          </div>
+          <span class="hl-ecm">Le taux swap sert de référence "sans risque" pour pricer les obligations corporate.</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-formula">Formule</span>
+        <div class="card-title">Basis Swap EUR — Euribor 3M vs 6M</div>
+        <div class="card-body">
+          <div class="formula">
+            <div class="f-label">Basis 10Y EUR</div>
+            Euribor 3M + 5,05bp = Euribor 6M
+          </div>
+          <strong>Pourquoi ?</strong> Euribor 6M intègre un risque de renouvellement sur 6 mois vs 3 mois → prime de liquidité.<br><br>
+          <span class="hl-dcm">Le basis swap permet de convertir une jambe Euribor 3M en Euribor 6M et vice versa.</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-formula">Formule</span>
+        <div class="card-title">Cross-Currency Basis EUR/USD</div>
+        <div class="card-body">
+          <div class="formula">
+            <div class="f-label">Basis 10Y USD/EUR</div>
+            USD Libor 3M + 15bp = Euribor 3M
+          </div>
+          <strong>Interprétation :</strong> Les dollars sont plus demandés → coût d'accès plus élevé → spread positif sur le dollar.<br><br>
+          <strong>Usage :</strong> Un émetteur EUR souhaitant émettre en USD swap le coupon fixe USD en coupon fixe EUR via Cross-Currency Swap.<br><br>
+          <span class="hl-amber">Émission en USD par LVMH → swappé en EUR pour limiter le risque de change.</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-formula">Calcul</span>
+        <div class="card-title">Pricer une obligation en spread</div>
+        <div class="card-body">
+          <div class="formula">
+            <div class="f-label">YTM d'une obligation corporate</div>
+            YTM = Taux swap N années + Spread de crédit (bp)
+          </div>
+          <strong>Exemple LVMH :</strong> Obligation 10A · Taux swap 10A = 0,27% · Spread = 90bp<br>
+          → <span class="hl-ecm">YTM = 0,27% + 0,90% = 1,17%</span><br><br>
+          <strong>Asset Swap Spread (ASW) :</strong> Spread mesuré par rapport au taux swap (plus précis que l'OAS pour comparer les émetteurs).
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ORGANISATION DCM -->
+  <div class="panel" id="panel-dcm-dcm-org">
+    <div class="cards-grid">
+
+      <div class="card">
+        <span class="card-tag tag-dcm">Organisation</span>
+        <div class="card-title">Structure d'un desk DCM</div>
+        <div class="card-body">
+          <div class="tbl-wrap"><table>
+            <tr><th>Pôle</th><th>Spécialité</th></tr>
+            <tr><td>Corp Origination</td><td>Entreprises non-financières (IG / HY)</td></tr>
+            <tr><td>FIG Origination</td><td>Banques, assurances (AT1, covered, Tier2)</td></tr>
+            <tr><td>SSA Origination</td><td>Souverains, supra, agences</td></tr>
+            <tr><td>EM Origination</td><td>Marchés émergents</td></tr>
+            <tr><td>HY Origination</td><td>High Yield, LBO</td></tr>
+            <tr><td>Syndicate</td><td>Livre d'ordres, pricing, allocation</td></tr>
+          </table></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-tag tag-dcm">Concept</span>
+        <div class="card-title">League Tables DCM</div>
+        <div class="card-body">
+          Classement des banques par <strong>volume émis</strong> en tant que bookrunner sur une période donnée.<br><br>
+          <strong>Critères :</strong> Volume total · Nombre de transactions · Part de marché par segment (IG, HY, FIG…).<br><br>
+          <span class="hl-dcm">Importance stratégique :</span> Les émetteurs choisissent les banques leaders notamment sur la base de leurs classements dans les league tables de leur secteur.<br><br>
+          <span class="hl-amber">Facteur clé pour gagner des mandats.</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- end main dcm -->
+</div>
+
+<!-- FLASHCARDS -->
+<div id="flash" class="section">
+<div class="main">
+  <div class="sec-header"><h2>Flashcards Interactives</h2></div>
+  <div class="flash-container">
+    <div class="flash-filter" id="flash-filter">
+      <button class="ff-btn active" onclick="filterFlash('all',this)">Tout</button>
+      <button class="ff-btn" onclick="filterFlash('ECM',this)">ECM</button>
+      <button class="ff-btn" onclick="filterFlash('DCM',this)">DCM</button>
+      <button class="ff-btn" onclick="filterFlash('FORMULE',this)">Formules</button>
+      <button class="ff-btn" onclick="filterFlash('AMF',this)">AMF</button>
+    </div>
+
+    <div class="flash-progress">
+      <span id="flash-count">1 / 30</span>
+      <div class="flash-bar-wrap"><div class="flash-bar" id="flash-bar" style="width:3%"></div></div>
+      <span id="flash-score">✓ 0</span>
+    </div>
+
+    <div class="flash-card-wrap" id="flash-card" onclick="flipCard()">
+      <div class="flash-inner">
+        <div class="flash-front">
+          <div class="flash-cat" id="flash-cat">ECM</div>
+          <div class="flash-q" id="flash-q">Chargement...</div>
+          <div class="flash-hint">Cliquer pour révéler</div>
+        </div>
+        <div class="flash-back">
+          <div class="flash-cat" id="flash-cat2">ECM</div>
+          <div class="flash-a" id="flash-a">Réponse...</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flash-controls">
+      <button class="flash-btn bad" onclick="markCard(false)">✗ À revoir</button>
+      <button class="flash-btn" onclick="flipCard()">↺ Retourner</button>
+      <button class="flash-btn good" onclick="markCard(true)">✓ Su</button>
+      <button class="flash-btn" onclick="nextCard()">→ Suivante</button>
+    </div>
+    <p style="text-align:center;font-size:0.75rem;color:var(--text3);margin-top:1rem">Marquer comme "Su" ou "À revoir" puis passer à la suivante.</p>
+  </div>
+</div>
+</div>
+
+<!-- FORMULES -->
+<div id="formulas" class="section">
+<div class="main">
+  <div class="sec-header"><h2>Formules & Calculs Clés</h2></div>
+  <div class="cards-grid">
+
+    <div class="card">
+      <span class="card-tag tag-formula">ECM</span>
+      <div class="card-title">TERP et DPS complets</div>
+      <div class="card-body">
+        <div class="formula">
+          <div class="f-label">Prix d'équilibre (TERP)</div>
+          PE = (C × n + P × n') / (n + n')
+        </div>
+        <div class="formula">
+          <div class="f-label">DPS = C − PE (post-détachement)</div>
+          DPS = (C − P) / (1 + n/n')
+        </div>
+        <div class="formula">
+          <div class="f-label">Avant détachement (DPS intégré au cours)</div>
+          DPS = (C − d − P) / (y + 1) où y = n/n', d = dividende
+        </div>
+        <strong>Décote ex-droit</strong> = (PE − P) / PE = (TERP − Prix émission) / TERP
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="card-tag tag-formula">ECM</span>
+      <div class="card-title">OCEANE — Bond floor et valeur</div>
+      <div class="card-body">
+        <div class="formula">
+          <div class="f-label">Bond floor (plancher actuariel)</div>
+          BF = Σ [C/(1+r)^t] + [Nominal/(1+r)^n]<br>
+          r = taux swap + spread de crédit
+        </div>
+        <div class="formula">
+          <div class="f-label">Valeur de l'option</div>
+          V(option) = Prix OC − Bond floor
+        </div>
+        <div class="formula">
+          <div class="f-label">TRI de l'OCEANE</div>
+          TRI = TRI obligataire − Valeur actuarielle option
+        </div>
+        <strong>Split IFRS (OCEANE)</strong> : Composante dette (plancher) + Fonds propres (option)
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="card-tag tag-formula">ECM</span>
+      <div class="card-title">Capitalisation et flottant post-IPO</div>
+      <div class="card-body">
+        <div class="formula">
+          <div class="f-label">Valorisation post-money</div>
+          Capi post = Valorisation pre × (1 − décote%) + Montant AK
+        </div>
+        <div class="formula">
+          <div class="f-label">Part flottant</div>
+          Flottant = (AK + Cession + Greenshoe) / Capi post
+        </div>
+        <div class="formula">
+          <div class="f-label">Part actionnaire post-IPO</div>
+          % acti post = (% acti × Capi pre − Cession) / Capi post
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="card-tag tag-formula">DCM</span>
+      <div class="card-title">Pricing obligataire</div>
+      <div class="card-body">
+        <div class="formula">
+          <div class="f-label">Prix obligation (actuariel)</div>
+          P = Σ [C_i / (1+YTM)^i] + [Nominal / (1+YTM)^n]
+        </div>
+        <div class="formula">
+          <div class="f-label">YTM corporate</div>
+          YTM = Taux swap N ans + Spread de crédit (bp)
+        </div>
+        <div class="formula">
+          <div class="f-label">Duration modifiée</div>
+          MD = −(dP/dr) / P ≈ duration Macaulay / (1+YTM)
+        </div>
+        <span class="hl-dcm">Règle : +1bp spread → variation prix ≈ −MD × 0,01%</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="card-tag tag-formula">DCM</span>
+      <div class="card-title">Swaps et basis</div>
+      <div class="card-body">
+        <div class="formula">
+          <div class="f-label">Basis EUR (10Y)</div>
+          Euribor 3M + 5,05bp = Euribor 6M
+        </div>
+        <div class="formula">
+          <div class="f-label">Cross-Currency Basis EUR/USD (10Y)</div>
+          USD Libor 3M + 15bp = Euribor 3M
+        </div>
+        <div class="formula">
+          <div class="f-label">All-in cost émetteur USD → EUR</div>
+          Coupon USD + CCS spread → Coupon EUR synthétique
+        </div>
+        <span class="hl-amber">Le basis cross-currency reflète la demande relative de devises (funding).</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="card-tag tag-formula">ECM</span>
+      <div class="card-title">ORNANE — Calcul dilution réduite</div>
+      <div class="card-body">
+        <div class="formula">
+          <div class="f-label">En cas de conversion (cours &gt; prix conversion)</div>
+          Cash = Nominal par obligation<br>
+          Actions = (Cours − Nominal) / Cours × nb obligations
+        </div>
+        <div class="formula">
+          <div class="f-label">Exemple : Nominal = 100€, cours = 130€</div>
+          Cash = 100€ · Actions = (130−100)/130 = 0,23 action/oblig
+        </div>
+        <strong>Dilution ORNANE ÷ 4</strong> vs OCEANE (1 oblig = 1 action).<br>
+        <span class="hl-red">Contre-partie :</span> mark-to-market IFRS de la composante optionnelle.
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="card-tag tag-amf">AMF</span>
+      <div class="card-title">Seuils réglementaires clés</div>
+      <div class="card-body">
+        <div class="formula">
+          <div class="f-label">Franchissements déclarables (capital / DdV)</div>
+          5% · 10% · 15% · 20% · 25% · 30% · 33,33% · 50% · 66,66%
+        </div>
+        <div class="formula">
+          <div class="f-label">OPA obligatoire</div>
+          Franchissement 30% OU +1%/an si 30–50%
+        </div>
+        <div class="formula">
+          <div class="f-label">Retrait obligatoire</div>
+          &gt; 95% capital + droits de vote
+        </div>
+        <span class="hl-amber">Délai de déclaration : 5 jours de bourse.</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="card-tag tag-formula">ECM</span>
+      <div class="card-title">Commissions de marché</div>
+      <div class="card-body">
+        <div class="tbl-wrap"><table>
+          <tr><th>Opération</th><th>Commission</th></tr>
+          <tr><td>IPO</td><td>1% – 3%</td></tr>
+          <tr><td>AK</td><td>1% – 3%</td></tr>
+          <tr><td>OCEANE large cap</td><td>0,5% – 1,5%</td></tr>
+          <tr><td>OCEANE small cap</td><td>1% – 3%</td></tr>
+          <tr><td>Offres publiques</td><td>Spécifique / forfait</td></tr>
+        </table></div>
+        <span class="hl-amber">Commission = montage + garantie + placement (au succès).</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<button class="fab" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// ---- NAVIGATION ----
+function showSection(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>{
+    b.classList.remove('active','ecm-active','dcm-active');
+  });
+  const btns=document.querySelectorAll('.nav-btn');
+  btns.forEach(b=>{
+    const txt=b.textContent.toLowerCase();
+    if((id==='home'&&txt.includes('accueil'))||(id==='ecm'&&txt.includes('ecm'))||(id==='dcm'&&txt.includes('dcm'))||(id==='flash'&&txt.includes('flash'))||(id==='formulas'&&txt.includes('formule'))){
+      b.classList.add('active');
+      if(id==='ecm') b.classList.add('ecm-active');
+      if(id==='dcm') b.classList.add('dcm-active');
+    }
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showSubtab(section,panelId){
+  const sectionEl=document.getElementById(section);
+  sectionEl.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  sectionEl.querySelectorAll('.stab').forEach(b=>b.classList.remove('active'));
+  const panel=document.getElementById('panel-'+section+'-'+panelId);
+  if(panel) panel.classList.add('active');
+  const stab=document.getElementById('stab-'+section+'-'+panelId);
+  if(stab) stab.classList.add('active');
+}
+
+// ---- FLASHCARDS ----
+const allCards=[
+  {cat:'ECM',q:'À quoi sert une IPO ?',a:'<strong>Financement</strong> de la croissance · <strong>Liquidité</strong> pour les actionnaires · <strong>Notoriété</strong> et crédibilité · Fidélisation des <strong>managers</strong> via stock-options. Contrainte : gouvernance, IFRS, coûts.'},
+  {cat:'ECM',q:'Que contient un Prospectus ?',a:'<strong>URD (document d\'enregistrement)</strong> : activité, gouvernance, comptes IFRS 3 ans, facteurs de risque.<br><strong>Note d\'opération</strong> : structure, calendrier, fourchette de prix.<br>Visé par l\'<strong>AMF</strong> avant toute offre publique.'},
+  {cat:'ECM',q:'Qu\'est-ce qu\'un livre d\'ordres (bookbuilding) ?',a:'Collecte des <strong>ordres d\'achat</strong> des investisseurs institutionnels pendant le roadshow. Le prix est fixé selon la <strong>demande et sa sensibilité au prix</strong>. La dynamique des <strong>3 premiers jours</strong> conditionne le succès.'},
+  {cat:'ECM',q:'Quelle est la différence entre une IPO primaire et secondaire ?',a:'<strong>Primaire</strong> : émission d\'actions nouvelles → fonds vont à la société (signal positif).<br><strong>Secondaire</strong> : cession d\'actions existantes → fonds vont aux actionnaires vendeurs (signal potentiellement négatif).'},
+  {cat:'ECM',q:'Qu\'est-ce que le flottant et pourquoi est-il important ?',a:'Part du capital <strong>librement négociable</strong> sur le marché. Requis minimum par Euronext. Un flottant faible = liquidité réduite = risque overhang lors du lock-up. Critère de sélection pour les <strong>indices boursiers</strong>.'},
+  {cat:'FORMULE',q:'Calculez le TERP (cours ex-droit) avec : C=100€, P=70€, n=10, n\'=2',a:'<strong>TERP = (C×n + P×n\') / (n+n\')</strong><br>(100×10 + 70×2) / 12 = 1140/12 = <strong>95€</strong><br><strong>DPS</strong> = C − TERP = 100 − 95 = <strong>5€</strong>'},
+  {cat:'FORMULE',q:'Formule du DPS avant détachement (avec dividende)',a:'<strong>DPS = (C − d − P) / (y + 1)</strong><br>où y = n/n\' (parité), d = dividende non partagé.<br>Après détachement : DPS = (C\' − d) / y'},
+  {cat:'ECM',q:'Qu\'est-ce que le Greenshoe ? Quel est son double rôle ?',a:'Option de sur-allocation = <strong>15%</strong> de la taille de l\'offre.<br>1. <strong>Augmenter la taille</strong> si demande forte.<br>2. <strong>Stabiliser le cours</strong> post-cotation : rachat en marché si cours < prix IPO, exercice de l\'option si cours > prix.'},
+  {cat:'ECM',q:'Qu\'est-ce que le lock-up ?',a:'Période d\'<strong>interdiction de cession</strong> imposée aux actionnaires post-IPO.<br>Managers : <strong>180 jours</strong>.<br>Fonds PE : <strong>12–18 mois</strong>.<br>But : éviter la pression vendeuse immédiate. Expiration = risque overhang.'},
+  {cat:'ECM',q:'AK avec DPS vs sans DPS : différences clés',a:'<strong>Avec DPS</strong> : actionnaires protégés, décote 20–50%, garantie 75%, période ~4–5 semaines, marché difficile OK.<br><strong>Sans DPS</strong> : VWAP 3j −10% max, placement 1–2 jours, marché porteur requis, pas de protection dilution.'},
+  {cat:'ECM',q:'Qu\'est-ce qu\'une AK réservée ?',a:'Réservée à <strong>une ou plusieurs personnes nommément désignées</strong>. Résolution ad hoc en <strong>AGE (2/3)</strong>. Prix librement fixé. Rapport CAC requis. Note AMF si >20% du capital.'},
+  {cat:'ECM',q:'Pourquoi les DPS sont-ils négociables ?',a:'Permettent aux actionnaires qui ne veulent pas souscrire de <strong>vendre leurs DPS sur le marché</strong> pour compenser la dilution patrimoniale. Principe de neutralité économique : patrimoine de l\'actionnaire inchangé qu\'il souscrive ou vende ses DPS.'},
+  {cat:'ECM',q:'Qu\'est-ce qu\'un bloc trade (ABB) ?',a:'<strong>Accelerated Bookbuilding</strong> = cession d\'un bloc d\'actions en <strong>quelques heures</strong> via book institutionnel. Prix fixé selon la demande. Possible backstop. Non adapté aux très grands blocs relatifs au flottant.'},
+  {cat:'ECM',q:'Différence ABB vs Bought Deal',a:'<strong>ABB</strong> : banque gère le livre, risque reste modéré, prix selon demande.<br><strong>Bought Deal</strong> : banque achète le bloc au prix garanti (risque max), puis replace → décote plus élevée mais certitude pour le cédant.'},
+  {cat:'ECM',q:'Définir un produit equity-linked',a:'Produit hybride = <strong>obligation + option sur action</strong>.<br>OCEANE (nouvelles actions) · ORNANE (cash + fraction actions) · OEA (actions existantes) · ORA (remboursable en actions).<br>But : financement moins cher grâce à la vente de l\'optionnalité.'},
+  {cat:'ECM',q:'OC "in the money" vs "out of the money"',a:'<strong>In the money</strong> (cours >> prix conversion) : se comporte comme une <strong>action</strong>. Delta >80%. Prime conversion <10%.<br><strong>Out of the money</strong> (cours << prix conversion) : se comporte comme une <strong>obligation</strong>. Delta <25%. Prime >50%.<br>OC = "bondlight".'},
+  {cat:'FORMULE',q:'Comment calcule-t-on le bond floor d\'une OC ?',a:'<strong>Bond floor = Σ [Coupon_i / (1+r)^i] + [Nominal / (1+r)^n]</strong><br>r = taux swap + spread de crédit de l\'émetteur.<br><strong>Hausse spread crédit → baisse bond floor → baisse valeur OC.</strong>'},
+  {cat:'ECM',q:'Coupon faible sur OC → quel impact sur la part optionnelle ?',a:'Coupon faible → <strong>bond floor plus bas</strong> (actualisation d\'un cash-flow réduit) → l\'option représente une <strong>plus grande part</strong> de la valeur totale de l\'OC. L\'émetteur "vend" plus d\'optionnalité pour obtenir le même financement.'},
+  {cat:'ECM',q:'OCEANE vs ORNANE : quel est l\'avantage clé de l\'ORNANE ?',a:'<strong>Dilution réduite ÷ ~4</strong> : en cas de conversion, cash au nominal + seulement la <em>surperformance</em> en actions. Exemple : Nominal 100€, cours 130€ → 100€ cash + 0,23 action (vs 1 action pour OCEANE).<br>Contre-partie : mark-to-market IFRS.'},
+  {cat:'ECM',q:'Qu\'est-ce qu\'une obligation échangeable (OEA) ?',a:'Similaire à l\'OC mais <strong>échange contre des actions existantes</strong> (participation cotée de l\'émetteur). Usage : céder une participation non stratégique · financer un holding. Risque : cession incertaine (cours-dépendant) · gel des titres.'},
+  {cat:'AMF',q:'Qu\'est-ce qu\'une information privilégiée ?',a:'Information <strong>non publique</strong>, <strong>précise</strong>, <strong>de nature à influer sur le cours</strong>. Utilisation → <strong>délit d\'initié</strong> = sanction pénale + amende AMF. Diffusion à un tiers sans raison = <strong>communication illicite d\'information privilégiée</strong>.'},
+  {cat:'AMF',q:'À quel seuil une OPA est-elle obligatoire ?',a:'<strong>Franchissement de 30%</strong> du capital ou des droits de vote. OU détention entre <strong>30–50%</strong> et acquisition de <strong>+1% en 12 mois</strong>. Prix = au moins le plus haut payé dans les 12 mois.'},
+  {cat:'AMF',q:'Quels sont les seuils de franchissement à déclarer ?',a:'5% · 10% · 15% · 20% · 25% · <strong>30%</strong> · 33,33% · 50% · 66,66%<br>Délai : <strong>5 jours de bourse</strong>. À la hausse comme à la baisse. Capital ET droits de vote.'},
+  {cat:'AMF',q:'Conditions pour un Retrait Obligatoire (RO)',a:'Détenir <strong>&gt;95% du capital ET des droits de vote</strong> à l\'issue d\'une OPR. Les minoritaires reçoivent une indemnisation au moins égale au prix de l\'OPR. Délai : 10 jours pour se décider après l\'OPR.'},
+  {cat:'DCM',q:'Qu\'est-ce qu\'une obligation ? Qui émet ?',a:'Titre de dette payant un <strong>coupon</strong> périodique + remboursement du <strong>nominal à maturité</strong>. Émetteurs : <strong>SSA</strong> (KFW, EIB), <strong>Corporate</strong> (LVMH, Airbus), <strong>FIG</strong> (BNP), <strong>EM</strong>. Via adjudication, offre publique, ou placement privé EMTN.'},
+  {cat:'DCM',q:'Qu\'est-ce qu\'un programme EMTN ?',a:'Documentation <strong>cadre</strong> permettant des émissions continues et répétées de dette sans re-documenter à chaque fois. Permet flexibilité sur maturité, devise, structure. Opposé au "stand-alone" (doc unique pour une transaction).'},
+  {cat:'DCM',q:'Hiérarchie des créanciers en cas de défaut',a:'Senior Secured > <strong>Senior Unsecured</strong> > Senior Non-Preferred > <strong>Tier 2</strong> > <strong>AT1 / CoCo</strong> > Actions ordinaires.<br>Covered bonds : garantis sur actifs ségrégués → quasi-SSA.'},
+  {cat:'FORMULE',q:'YTM d\'une obligation corporate = ?',a:'<strong>YTM = Taux swap N ans + Spread de crédit (bp)</strong><br>Exemple LVMH : swap 10A = 0,27% + spread 90bp = YTM = 1,17%.<br>Relation inverse : taux monte → prix baisse.'},
+  {cat:'FORMULE',q:'Basis swap EUR : Euribor 3M vs 6M (10 ans)',a:'<strong>Euribor 3M + 5,05bp = Euribor 6M</strong> (10 ans).<br>Euribor 6M est plus élevé car il intègre un risque de renouvellement sur 6 mois. Le basis swap permet de convertir d\'une jambe à l\'autre.'},
+  {cat:'DCM',q:'IPT → Guidance → Final Terms : quel est ce process ?',a:'<strong>IPT</strong> : fourchette initiale large (volontairement conservative).<br><strong>Guidance</strong> : resserrée selon qualité du livre (signal positif).<br><strong>Final Terms</strong> : prix définitif selon demande. New issue premium = concession 5–15bp accordée aux investisseurs.'},
+];
+
+let filtered=[...allCards];
+let currentIdx=0;
+let score=0;
+
+function filterFlash(cat,btn){
+  document.querySelectorAll('.ff-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  filtered=cat==='all'?[...allCards]:allCards.filter(c=>c.cat===cat);
+  currentIdx=0;score=0;
+  document.getElementById('flash-score').textContent='✓ 0';
+  loadCard();
+}
+
+function loadCard(){
+  if(!filtered.length) return;
+  const c=filtered[currentIdx];
+  document.getElementById('flash-cat').textContent=c.cat;
+  document.getElementById('flash-cat2').textContent=c.cat;
+  document.getElementById('flash-q').textContent=c.q;
+  document.getElementById('flash-a').innerHTML=c.a;
+  const bar=Math.round(((currentIdx+1)/filtered.length)*100);
+  document.getElementById('flash-bar').style.width=bar+'%';
+  document.getElementById('flash-count').textContent=(currentIdx+1)+' / '+filtered.length;
+  document.getElementById('flash-card').classList.remove('flipped');
+  // Color cat badge
+  const catEl=document.getElementById('flash-cat');
+  const catEl2=document.getElementById('flash-cat2');
+  catEl.style.color=c.cat==='ECM'?'#34d399':c.cat==='DCM'?'#60a5fa':c.cat==='FORMULE'?'#a78bfa':'#fbbf24';
+  catEl2.style.color=catEl.style.color;
+}
+
+function flipCard(){document.getElementById('flash-card').classList.toggle('flipped')}
+function nextCard(){
+  currentIdx=(currentIdx+1)%filtered.length;
+  loadCard();
+}
+function markCard(good){
+  if(good){score++;document.getElementById('flash-score').textContent='✓ '+score;}
+  setTimeout(nextCard,300);
+}
+loadCard();
+</script>
+</body>
+</html>
